@@ -64,7 +64,11 @@
       </div>
 
       <!-- Multi-Step Form -->
-      <form id="pwaForm" class="p-8 md:p-12 flex-grow overflow-y-auto max-h-[70vh]">
+      <form id="pwaForm" name="client-onboarding" netlify netlify-honeypot="bot-field" method="POST" class="p-8 md:p-12 flex-grow overflow-y-auto max-h-[70vh]">
+        <input type="hidden" name="form-name" value="client-onboarding" />
+        <div style="display: none;">
+          <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+        </div>
 
         <!-- STEP 1: Business -->
         <div class="step active" data-step="1">
@@ -313,12 +317,13 @@
     }
 
     // ==========================
-    // PDF Generation
+    // Form Submission with Netlify
     // ==========================
     const form = document.getElementById("pwaForm");
-    form.addEventListener("submit", e=>{
+    form.addEventListener("submit", async e=>{
       e.preventDefault();
-      // Fill PDF
+
+      // Fill PDF template first
       document.getElementById("pdf-biz").textContent = document.getElementById("business_name").value;
       document.getElementById("pdf-contact").textContent = document.getElementById("contact_person").value;
       document.getElementById("pdf-phone").textContent = document.getElementById("phone").value;
@@ -326,9 +331,33 @@
       document.getElementById("pdf-trx").textContent = document.getElementById("trxId").value || "N/A";
       document.getElementById("pdf-date").textContent = new Date().toLocaleString();
 
+      // Generate PDF
       const element = document.getElementById("receipt-pdf-template");
       html2pdf().from(element).save("DigitalPresence-Receipt.pdf");
-      alert("PDF Generated! Thank you.");
+
+      // Submit to Netlify if online
+      if (navigator.onLine) {
+        try {
+          const formData = new FormData(form);
+          const response = await fetch('/', {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.ok) {
+            alert("Form submitted successfully and PDF generated! Thank you.");
+          } else {
+            alert("PDF generated! Form submission may have failed - please check your connection.");
+          }
+        } catch (error) {
+          console.error('Form submission error:', error);
+          alert("PDF generated! Form submission failed - please try again when online.");
+        }
+      } else {
+        alert("PDF generated! Form will be submitted when you're back online.");
+      }
+
+      // Reset form
       form.reset(); currentStep=0; showStep(0);
     });
 

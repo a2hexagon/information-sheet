@@ -6,9 +6,27 @@ A Progressive Web App for client onboarding in the Digital Presence portal.
 
 - Multi-step form for client information collection
 - PDF receipt generation
-- Offline functionality
+- Netlify Forms integration for form submissions
+- Offline functionality with fallback PDF generation
 - Installable as a mobile app
 - Responsive design
+
+## Form Submission
+
+The app uses Netlify Forms for handling form submissions when online. When offline, it generates a PDF receipt locally. The form includes:
+
+- Spam protection via honeypot field
+- Automatic PDF generation on submission
+- Offline fallback functionalitymobile app
+- Responsive design
+
+## Form Submission
+
+The app uses Netlify Forms for handling form submissions when online. When offline, it generates a PDF receipt locally. The form includes:
+
+- Spam protection via honeypot field
+- Automatic PDF generation on submission
+- Offline fallback functionality
 
 ## Installation
 
